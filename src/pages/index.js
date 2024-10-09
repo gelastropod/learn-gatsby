@@ -1,10 +1,12 @@
 import React, { useEffect, useState, memo } from "react"
-import { throttle } from "lodash";
+import { repeat, throttle } from "lodash";
 
 const pageStyles = {
   color: "#232129",
   padding: 96,
   fontFamily: "-apple-system, Roboto, sans-serif, serif",
+  overflow: "hidden",
+  whiteSpace: "pre-line",
 }
 const headingStyles = {
   marginTop: 0,
@@ -14,8 +16,6 @@ const headingStyles = {
 const stickyHeadingStyle = {
   position: "sticky",
   top: 20,
-  marginTop: 0,
-  marginBottom: 64,
   maxWidth: 1000,
 }
 const headingAccentStyles = {
@@ -139,11 +139,6 @@ const links = [
 
 const ScrollPositionHandler = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [scrollStyle, setScrollStyle] = useState({
-    position: "absolute",
-    top: "0px",
-    willChange: "transform",
-  });
 
   useEffect(() => {
     let ticking = false;
@@ -152,11 +147,6 @@ const ScrollPositionHandler = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           setScrollPosition(window.pageYOffset);
-          setScrollStyle({
-            position: "absolute",
-            top: `${window.pageYOffset}px`,
-            willChange: "transform",
-          });
           ticking = false;
         });
         ticking = true;
@@ -177,20 +167,24 @@ const ScrollPositionHandler = () => {
 
   return (
     <div>
-      <h1 style={scrollStyle}>
-        Current scroll position: {scrollPosition}
+      <h1 style={{
+        ...headingStyles,
+        position: "absolute",
+        left: `${scrollPosition * 3 - 2500}px`,
+      }}>
+        Woweeee
       </h1>
     </div>
   )
 }
 
 function BlankBlock(lines) {
-  var paragraphs = [];
+  var text = "";
   for (var i = 0; i < lines; i++)
-    paragraphs.push(<p>.</p>);
+    text += "\n";
 
   return (
-    paragraphs.map(element => (element))
+    <p>{text}</p>
   );
 }
 
@@ -217,8 +211,12 @@ const IndexPage = memo(() => {
         </a>
       </p>
       <h1 style={stickyHeadingStyle}>This is sticky</h1>
+      {BlankBlock(50)}
+      <p>{repeat("-", 198)}</p>
       {ScrollPositionHandler()}
-      {BlankBlock(100)}
+      <h1 style={{marginTop: 0, marginBottom: 0}}>&nbsp;</h1>
+      <p>{repeat("-", 198)}</p>
+      {BlankBlock(50)}
     </main>
   )
   /*return (
