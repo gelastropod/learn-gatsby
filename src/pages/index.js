@@ -25,7 +25,6 @@ const stickyDivStyle = {
   marginRight: -96,
   marginTop: 0,
   marginBottom: 0,
-  backgroundColor: "#303030",
   zIndex: 1000,
 }
 const paragraphStyles = {
@@ -92,12 +91,7 @@ const ScrollPositionHandler = (text, posFunction) => {
 function StickyHeader(text) {
   return (
     <div style={{...stickyDivStyle, display: "flex"}}>
-      <img src={icon} alt="Icon" style={{
-        width: "3%",
-        height: "3%",
-        padding: 21,
-      }} />
-      <h1>{text}</h1>
+      <h1 style={{paddingLeft: 100,}}>{text}</h1>
     </div>
   )
 }
@@ -135,19 +129,18 @@ const IndexPage = memo(() => {
         </a>
       </p>
       <div style={{
-        ...divStyle,
         position: "absolute",
         top: 300,
         left: 0,
+        minHeight: 3440,
         zIndex: 1001,
-        minHeight: 10000,
-        overflowY: "hidden",
       }}>
-        <img src={icon} alt="Icon" style={{
-        padding: 21,
+        <a href="https://gelastropod.github.io"><img src={icon} alt="Icon" style={{
         position: "sticky",
+        width: "20%",
+        padding: 16,
         top: 0,
-      }} />
+      }} /></a>
       </div>
       <div style={divStyle}>
         {StickyHeader("This is sticky")}
