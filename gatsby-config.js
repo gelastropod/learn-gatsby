@@ -5,6 +5,13 @@ module.exports = {
   siteMetadata: {
     siteUrl: `https://www.yourdomain.tld`,
   },
-  plugins: [],
+  plugins: [
+    {
+      resolve: "gatsby-plugin-manifest",
+      options: {
+        "icon": "src/images/icon.png",
+      }
+    }
+  ],
   pathPrefix: "/learn-gatsby",
 }

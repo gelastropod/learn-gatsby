@@ -1,6 +1,7 @@
 import React, { useEffect, useState, memo } from "react"
 import { repeat } from "lodash";
 import "../styles/global.css";
+import icon from "../images/icon.png";
 
 const pageStyles = {
   color: "#D4D4D4",
@@ -17,10 +18,9 @@ const headingStyles = {
   marginTop: 0,
   marginBottom: 64,
 }
-const stickyHeadingStyle = {
+const stickyDivStyle = {
   position: "sticky",
   top: 0,
-  padding: 20,
   marginLeft: -96,
   marginRight: -96,
   marginTop: 0,
@@ -89,6 +89,19 @@ const ScrollPositionHandler = (text, posFunction) => {
   )
 }
 
+function StickyHeader(text) {
+  return (
+    <div style={{...stickyDivStyle, display: "flex"}}>
+      <img src={icon} alt="Icon" style={{
+        width: "3%",
+        height: "3%",
+        padding: 21,
+      }} />
+      <h1>{text}</h1>
+    </div>
+  )
+}
+
 function BlankBlock(lines) {
   var text = "";
   for (var i = 0; i < lines; i++)
@@ -121,8 +134,23 @@ const IndexPage = memo(() => {
           gelastropod.github.io
         </a>
       </p>
+      <div style={{
+        ...divStyle,
+        position: "absolute",
+        top: 300,
+        left: 0,
+        zIndex: 1001,
+        minHeight: 10000,
+        overflowY: "hidden",
+      }}>
+        <img src={icon} alt="Icon" style={{
+        padding: 21,
+        position: "sticky",
+        top: 0,
+      }} />
+      </div>
       <div style={divStyle}>
-        <h1 style={stickyHeadingStyle}>This is sticky</h1>
+        {StickyHeader("This is sticky")}
         {BlankBlock(50)}
         <p>{repeat("-", 198)}</p>
         {ScrollPositionHandler("<<<<<Tidal", (pos) => ({
@@ -140,8 +168,9 @@ const IndexPage = memo(() => {
         }))}
         <p>{repeat("-", 198)}</p>
         {BlankBlock(1)}
-      </div><div style={divStyle}>
-        <h1 style={stickyHeadingStyle}>Another sticky</h1>
+      </div>
+      <div style={divStyle}>
+        {StickyHeader("Another sticky")}
         {BlankBlock(50)}
         {ScrollPositionHandler("Amazing effect", (pos) => ({
           ...headingStyles,
@@ -151,8 +180,9 @@ const IndexPage = memo(() => {
           left: Math.min(pos * 2 - 4450, 0)
         }))}
         {BlankBlock(1)}
-      </div><div style={divStyle}>
-        <h1 style={stickyHeadingStyle}>Last sticky</h1>
+      </div>
+      <div style={divStyle}>
+        {StickyHeader("Last sticky")}
         {BlankBlock(50)}
       </div>
     </main>
