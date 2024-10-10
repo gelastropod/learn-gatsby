@@ -26,6 +26,7 @@ const stickyDivStyle = {
   marginTop: 0,
   marginBottom: 0,
   zIndex: 1000,
+  backgroundColor: "#141414",
 }
 const paragraphStyles = {
   marginBottom: 48,
