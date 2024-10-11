@@ -54,6 +54,7 @@ const ScrollPositionHandler = (text, posFunction) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [elementWidth, setElementWidth] = useState(0);
   const elementRef = useRef(0);
+  var windowWidth = 0.0;
 
   useEffect(() => {
     let ticking = false;
@@ -63,6 +64,7 @@ const ScrollPositionHandler = (text, posFunction) => {
         window.requestAnimationFrame(() => {
           setScrollPosition(elementRef.current.getBoundingClientRect().y / window.innerHeight);
           setElementWidth(elementRef.current.getBoundingClientRect().width);
+          windowWidth = window.innerWidth;
           ticking = false;
         });
         ticking = true;
@@ -71,9 +73,8 @@ const ScrollPositionHandler = (text, posFunction) => {
 
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", handleScroll);
+      handleScroll();
     }
-
-    handleScroll();
 
     return () => {
       if (typeof window !== "undefined") {
@@ -85,11 +86,11 @@ const ScrollPositionHandler = (text, posFunction) => {
   return (
     <>
       <div>
-        <h1 ref={elementRef} style={posFunction(scrollPosition, window.innerWidth, elementWidth / window.innerWidth)}>
+        <h1 ref={elementRef} style={posFunction(scrollPosition, windowWidth, elementWidth / windowWidth)}>
           {text}
         </h1>
       </div>
-      <h1 style={{marginTop: posFunction(scrollPosition, window.innerWidth, elementWidth / window.innerWidth).marginTop, marginBottom: posFunction(scrollPosition, window.innerWidth, elementWidth / window.innerWidth).marginBottom}}>&nbsp;</h1>
+      <h1 style={{marginTop: posFunction(scrollPosition, windowWidth, elementWidth / windowWidth).marginTop, marginBottom: posFunction(scrollPosition, windowWidth, elementWidth / windowWidth).marginBottom}}>&nbsp;</h1>
     </>
   )
 }
