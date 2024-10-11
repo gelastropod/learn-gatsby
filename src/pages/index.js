@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from "react"
+import React, { useEffect, useState, memo, useRef } from "react"
 import { repeat } from "lodash";
 import "../styles/global.css";
 import icon from "../images/icon.png";
@@ -52,6 +52,8 @@ const headerLinkStyle = {
 
 const ScrollPositionHandler = (text, posFunction) => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [elementWidth, setElementWidth] = useState(0);
+  const elementRef = useRef(0);
 
   useEffect(() => {
     let ticking = false;
@@ -59,7 +61,8 @@ const ScrollPositionHandler = (text, posFunction) => {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrollPosition(window.pageYOffset);
+          setScrollPosition(elementRef.current.getBoundingClientRect().y / window.innerHeight);
+          setElementWidth(elementRef.current.getBoundingClientRect().width);
           ticking = false;
         });
         ticking = true;
@@ -69,6 +72,8 @@ const ScrollPositionHandler = (text, posFunction) => {
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", handleScroll);
     }
+
+    handleScroll();
 
     return () => {
       if (typeof window !== "undefined") {
@@ -80,11 +85,11 @@ const ScrollPositionHandler = (text, posFunction) => {
   return (
     <>
       <div>
-        <h1 style={posFunction(scrollPosition)}>
+        <h1 ref={elementRef} style={posFunction(scrollPosition, window.innerWidth, elementWidth / window.innerWidth)}>
           {text}
         </h1>
       </div>
-      <h1 style={{marginTop: posFunction(scrollPosition).marginTop, marginBottom: posFunction(scrollPosition).marginBottom}}>&nbsp;</h1>
+      <h1 style={{marginTop: posFunction(scrollPosition, window.innerWidth, elementWidth / window.innerWidth).marginTop, marginBottom: posFunction(scrollPosition, window.innerWidth, elementWidth / window.innerWidth).marginBottom}}>&nbsp;</h1>
     </>
   )
 }
@@ -147,18 +152,20 @@ const IndexPage = memo(() => {
         {StickyHeader("This is sticky")}
         {BlankBlock(50)}
         <p>{repeat("-", 198)}</p>
-        {ScrollPositionHandler("<<<<<Tidal", (pos) => ({
+        {ScrollPositionHandler("<<<<<Tidal", (pos, width, elementWidth) => ({
           marginTop: 32,
           marginBottom: 32,
+          marginLeft: -96,
           position: "absolute",
-          left: 3800 - pos * 3
+          left: Math.max(Math.min(2.0 * Math.pow(pos - 0.5, 3) + 0.2 * (pos - 0.5) + 0.5 - 0.5 * elementWidth, 2.0), -2.0) * width,
         }))}
         <p>{repeat("-", 198)}</p>
-        {ScrollPositionHandler("Wave>>>>>", (pos) => ({
+        {ScrollPositionHandler("Wave>>>>>", (pos, width, elementWidth) => ({
           marginTop: 32,
           marginBottom: 32,
+          marginRight: -96,
           position: "absolute",
-          left: pos * 3 - 3000
+          right: Math.max(Math.min(2.0 * Math.pow(pos - 0.5, 3) + 0.2 * (pos - 0.5) + 0.5 - 0.5 * elementWidth, 2.0), -2.0) * width,
         }))}
         <p>{repeat("-", 198)}</p>
         {BlankBlock(1)}
@@ -166,12 +173,13 @@ const IndexPage = memo(() => {
       <div style={divStyle}>
         {StickyHeader("Another sticky")}
         {BlankBlock(50)}
-        {ScrollPositionHandler("Amazing effect", (pos) => ({
+        {ScrollPositionHandler("Amazing effect", (pos, width, elementWidth) => ({
           ...headingStyles,
           padding: 20,
           backgroundColor: "#4A9CD6",
           position: "absolute",
-          left: Math.min(pos * 2 - 4450, 0)
+          left: Math.max(Math.min(-Math.pow(Math.max(pos - 0.25, 1.0e-9), 3.0), 2.0), -2.0) * width,
+          opacity: Math.min(Math.max(Math.pow(1.5 - pos, 3.0), 0.0), 1.0),
         }))}
         {BlankBlock(1)}
       </div>
