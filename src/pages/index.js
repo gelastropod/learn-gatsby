@@ -2,6 +2,7 @@ import React, { useEffect, useState, memo, useRef } from "react"
 import { repeat } from "lodash";
 import "../styles/global.css";
 import icon from "../images/icon.png";
+import WebGLCanvas from "../components/WebGLComponent";
 
 const pageStyles = {
   color: "#D4D4D4",
@@ -59,12 +60,13 @@ const ScrollPositionHandler = (text, posFunction) => {
   useEffect(() => {
     let ticking = false;
 
+    setElementWidth(elementRef.current.getBoundingClientRect().width);
+    windowWidthRef.current = window.innerWidth;
+
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           setScrollPosition(elementRef.current.getBoundingClientRect().y / window.innerHeight);
-          setElementWidth(elementRef.current.getBoundingClientRect().width);
-          windowWidthRef.current = window.innerWidth;
           ticking = false;
         });
         ticking = true;
@@ -99,8 +101,36 @@ const ScrollPositionHandler = (text, posFunction) => {
 function StickyHeader(text) {
   return (
     <div style={{...stickyDivStyle, display: "flex"}}>
-      <h1 style={{paddingLeft: 100,}}>{text}</h1>
+      <h1 style={{paddingLeft: 105,}}>{text}</h1>
     </div>
+  )
+}
+
+function StickySidebar(component) {
+  const componentRef = useRef(0);
+  const [componentY, setComponentY] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    setComponentY(componentRef.current.getBoundingClientRect().y);
+    setScrollPosition(window.scrollY);
+  }, []);
+
+  return (
+    <>
+      <a href="https://gelastropod.github.io"><img src={icon} alt="Icon" style={{
+        marginLeft: -86,
+        position: "sticky",
+        width: "5%",
+        zIndex: 1001,
+        padding: 12.5,
+        top: 0,
+      }} /></a>
+      <div ref={componentRef} style={{
+        ...divStyle,
+        marginTop: -86.16,
+      }}>{component}</div>
+    </>
   )
 }
 
@@ -136,42 +166,30 @@ const IndexPage = memo(() => {
           gelastropod.github.io
         </a>
       </p>
-      <div style={{
-        position: "absolute",
-        top: 300,
-        left: 0,
-        minHeight: 3440,
-        zIndex: 1001,
-      }}>
-        <a href="https://gelastropod.github.io"><img src={icon} alt="Icon" style={{
-        position: "sticky",
-        width: "20%",
-        padding: 16,
-        top: 0,
-      }} /></a>
-      </div>
-      <div style={divStyle}>
-        {StickyHeader("This is sticky")}
-        {BlankBlock(50)}
-        <p>{repeat("-", 198)}</p>
-        {ScrollPositionHandler("<<<<<Tidal", (pos, width, elementWidth) => ({
-          marginTop: 32,
-          marginBottom: 32,
-          marginLeft: -96,
-          position: "absolute",
-          left: Math.max(Math.min(2.0 * Math.pow(pos - 0.5, 3) + 0.2 * (pos - 0.5) + 0.5 - 0.5 * elementWidth, 2.0), -2.0) * width,
-        }))}
-        <p>{repeat("-", 198)}</p>
-        {ScrollPositionHandler("Wave>>>>>", (pos, width, elementWidth) => ({
-          marginTop: 32,
-          marginBottom: 32,
-          marginRight: -96,
-          position: "absolute",
-          right: Math.max(Math.min(2.0 * Math.pow(pos - 0.5, 3) + 0.2 * (pos - 0.5) + 0.5 - 0.5 * elementWidth, 2.0), -2.0) * width,
-        }))}
-        <p>{repeat("-", 198)}</p>
-        {BlankBlock(1)}
-      </div>
+      {StickySidebar(
+        <>
+          {StickyHeader("This is sticky")}
+          {BlankBlock(50)}
+          <p>{repeat("-", 198)}</p>
+          {ScrollPositionHandler("<<<<<Tidal", (pos, width, elementWidth) => ({
+            marginTop: 32,
+            marginBottom: 32,
+            marginLeft: -96,
+            position: "absolute",
+            left: Math.max(Math.min(2.0 * Math.pow(pos - 0.5, 3) + 0.2 * (pos - 0.5) + 0.5 - 0.5 * elementWidth, 2.0), -2.0) * width,
+          }))}
+          <p>{repeat("-", 198)}</p>
+          {ScrollPositionHandler("Wave>>>>>", (pos, width, elementWidth) => ({
+            marginTop: 32,
+            marginBottom: 32,
+            marginRight: -96,
+            position: "absolute",
+            right: Math.max(Math.min(2.0 * Math.pow(pos - 0.5, 3) + 0.2 * (pos - 0.5) + 0.5 - 0.5 * elementWidth, 2.0), -2.0) * width,
+          }))}
+          <p>{repeat("-", 198)}</p>
+          {BlankBlock(1)}
+        </>
+      )}
       <div style={divStyle}>
         {StickyHeader("Another sticky")}
         {BlankBlock(50)}
@@ -187,6 +205,7 @@ const IndexPage = memo(() => {
       </div>
       <div style={divStyle}>
         {StickyHeader("Last sticky")}
+        <WebGLCanvas vert="main.vert" frag="main.frag" />
         {BlankBlock(50)}
       </div>
     </main>
