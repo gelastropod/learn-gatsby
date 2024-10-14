@@ -9,7 +9,7 @@ const WebGLCanvas = (props) => {
       windowWidth.current = window.innerWidth;
       windowHeight.current = window.innerHeight;
   
-      const gl = canvasRef.current.getContext("webgl");
+      const gl = canvasRef.current.getContext("webgl2");
   
       if (!gl) {
         console.error("WebGL not supported on browser.");
@@ -33,12 +33,10 @@ const WebGLCanvas = (props) => {
       };
 
       const context = require.context('!!raw-loader!../shaders', false, /.*\..*/);
-      console.error(context.keys());
       const loadShaderSource = (shaderName) => {
         try {
-          console.error(`./{shaderName}`);
-          if (context.keys().includes(`./{shaderName}`)) {
-            const module = context(`./{shaderName}`);
+          if (context.keys().includes(`./${shaderName}`)) {
+            const module = context(`./${shaderName}`);
             return module.default;
           }
           return null;
